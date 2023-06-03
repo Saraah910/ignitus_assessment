@@ -5,6 +5,7 @@ import pic3 from "./assets/pencil.jpg"
 import pic4 from "./assets/main-page.png"
 import pic5 from "./assets/logo-image.jpg"
 import pic6 from "./assets/logo-image.jpg"
+
 export default function Gallary(){
 
     const [pictures, setPictures] = useState([
@@ -17,23 +18,36 @@ export default function Gallary(){
         ]);
       
     const [cart, setCart] = useState([]);
+    const [paid, setPaid] = useState(false);
       
     const addToCart = (picture) => {
-        setCart([...cart, picture]);
+        setCart((prevCart) => {
+            return [...prevCart, picture];
+        });
     };
     
     const removeFromCart = (picture) => {
-        const updatedCart = cart.filter((item) => item.id !== picture.id);
-        setCart(updatedCart);
+        setCart((prevCart) => {
+        const pictureIndex = prevCart.findIndex((item) => item.id === picture.id);
+        if (pictureIndex !== -1) {
+            const updatedCart = [...prevCart];
+            updatedCart.splice(pictureIndex, 1);
+            return updatedCart;
+        }
+        return prevCart;
+        });
     };
     
     const getTotalPrice = () => {
         return cart.reduce((total, item) => total + item.price, 0);
     };
     return(
-        <div style={{textAlign:"center"}}>
-            <h2>Pictures for Sale</h2>
-            <h4>Buy pictures of your choice</h4>
+        <div style={{textAlign:"center", fontFamily:"cursive",margin:"5%"}}>
+            <div style={{border:"2px solid red",marginLeft:"5%",marginRight:"5%"}}>
+                <h2>Pictures for Sale</h2>
+                <h4>Buy pictures of your choice starting just for 10 $</h4>
+            </div>
+            
             <ul style={{display:"flex", flexDirection:"row",alignItems:"center", gap:"3%",overflowX:"scroll",marginLeft:"15%",marginRight:"10%"}}>
                 {pictures.map((picture) => (
                     <div key={picture.id} >
@@ -49,11 +63,11 @@ export default function Gallary(){
 
             <h2>Shopping Cart</h2>
             {cart.length === 0 ? (
-                <p>Your cart is empty.</p>
+                <p>Your cart is empty. <b>Buy items</b></p>
             ) : (
                 <ul>
                 {cart.map((picture) => (
-                    <li key={picture.id}>
+                    <li key={picture.id} style={{listStyle:"none",display:"flex",justifyContent:"center",alignItems:"center"}}>
                     {picture.name} - ${picture.price}
                     <img alt={picture.name} src={picture.address} width={80} height={80}></img>
                     <button onClick={() => removeFromCart(picture)}>Remove</button>
@@ -65,7 +79,10 @@ export default function Gallary(){
             {cart.length > 0 && (
                 <div>
                 <h3>Total Price: ${getTotalPrice()}</h3>
-                <button onClick={() => setCart([])}>Pay</button>
+                <button onClick={() => {
+                    setCart([])
+                }}>Pay</button>
+                
                 </div>
             )}
         </div>
