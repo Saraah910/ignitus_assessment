@@ -24,6 +24,9 @@ export default function Gallary(){
         setCart((prevCart) => {
             return [...prevCart, picture];
         });
+        setPictures((prevPictures) =>
+            prevPictures.filter((item) => item.id !== picture.id)
+        );
     };
     
     const removeFromCart = (picture) => {
@@ -36,6 +39,8 @@ export default function Gallary(){
         }
         return prevCart;
         });
+        setPictures((prevPictures) => [...prevPictures, picture]);
+
     };
     
     const getTotalPrice = () => {
